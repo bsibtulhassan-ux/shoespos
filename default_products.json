@@ -1,0 +1,543 @@
+[
+  {
+    "id": 8,
+    "name": "XARASOFT Joggers",
+    "brand": "XARA SOFT",
+    "category": "Running",
+    "gender": "Men",
+    "base_price": 1200.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
+    "description": "",
+    "created_at": "2026-10-16 16:17:36",
+    "variant_count": 8,
+    "total_stock": 35,
+    "variants": [
+      {
+        "id": 34,
+        "product_id": 8,
+        "sku": "XAR-XAR-BL-US8",
+        "barcode": "1526608",
+        "size": "US 8",
+        "color": "Black",
+        "stock_quantity": 2,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 35,
+        "product_id": 8,
+        "sku": "XAR-XAR-BL-US9",
+        "barcode": "5293774",
+        "size": "US 9",
+        "color": "Black",
+        "stock_quantity": 5,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 36,
+        "product_id": 8,
+        "sku": "XAR-XAR-BL-US10",
+        "barcode": "3807666",
+        "size": "US 10",
+        "color": "Black",
+        "stock_quantity": 5,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 37,
+        "product_id": 8,
+        "sku": "XAR-XAR-BL-US11",
+        "barcode": "9918133",
+        "size": "US 11",
+        "color": "Black",
+        "stock_quantity": 4,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 38,
+        "product_id": 8,
+        "sku": "XAR-XAR-WH-US8",
+        "barcode": "6996370",
+        "size": "US 8",
+        "color": "White",
+        "stock_quantity": 5,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 39,
+        "product_id": 8,
+        "sku": "XAR-XAR-WH-US9",
+        "barcode": "8266974",
+        "size": "US 9",
+        "color": "White",
+        "stock_quantity": 4,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 40,
+        "product_id": 8,
+        "sku": "XAR-XAR-WH-US10",
+        "barcode": "7916370",
+        "size": "US 10",
+        "color": "White",
+        "stock_quantity": 5,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      },
+      {
+        "id": 41,
+        "product_id": 8,
+        "sku": "XAR-XAR-WH-US11",
+        "barcode": "4950090",
+        "size": "US 11",
+        "color": "White",
+        "stock_quantity": 5,
+        "price": 1200.0,
+        "created_at": "2026-10-16 16:17:36"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Arizona Birko-Flor Sandal",
+    "brand": "Birkenstock",
+    "category": "Sandals",
+    "gender": "Unisex",
+    "base_price": 110.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&auto=format&fit=crop&q=80",
+    "description": "Two-strap slide with anatomical cork-latex footbed and soft suede lining.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 5,
+    "total_stock": 35,
+    "variants": [
+      {
+        "id": 27,
+        "product_id": 6,
+        "sku": "BRK-ARZ-MC-40",
+        "barcode": "7896001",
+        "size": "US 7 / EU 40",
+        "color": "Mocha Brown",
+        "stock_quantity": 8,
+        "price": 110.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 28,
+        "product_id": 6,
+        "sku": "BRK-ARZ-MC-41",
+        "barcode": "7896002",
+        "size": "US 8 / EU 41",
+        "color": "Mocha Brown",
+        "stock_quantity": 7,
+        "price": 110.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 29,
+        "product_id": 6,
+        "sku": "BRK-ARZ-MC-42",
+        "barcode": "7896003",
+        "size": "US 9 / EU 42.5",
+        "color": "Mocha Brown",
+        "stock_quantity": 9,
+        "price": 110.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 30,
+        "product_id": 6,
+        "sku": "BRK-ARZ-BK-41",
+        "barcode": "7896004",
+        "size": "US 8 / EU 41",
+        "color": "Black Matte",
+        "stock_quantity": 6,
+        "price": 110.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 31,
+        "product_id": 6,
+        "sku": "BRK-ARZ-BK-42",
+        "barcode": "7896005",
+        "size": "US 9 / EU 42.5",
+        "color": "Black Matte",
+        "stock_quantity": 5,
+        "price": 110.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "6-Inch Premium Waterproof Boot",
+    "brand": "Timberland",
+    "category": "Boots",
+    "gender": "Unisex",
+    "base_price": 198.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=600&auto=format&fit=crop&q=80",
+    "description": "The original yellow work boot with seam-sealed waterproof construction and PrimaLoft insulation.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 4,
+    "total_stock": 14,
+    "variants": [
+      {
+        "id": 23,
+        "product_id": 5,
+        "sku": "TMB-6IN-WH-41",
+        "barcode": "7895001",
+        "size": "US 8 / EU 41",
+        "color": "Wheat Nubuck",
+        "stock_quantity": 4,
+        "price": 198.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 24,
+        "product_id": 5,
+        "sku": "TMB-6IN-WH-42",
+        "barcode": "7895002",
+        "size": "US 9 / EU 42.5",
+        "color": "Wheat Nubuck",
+        "stock_quantity": 5,
+        "price": 198.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 25,
+        "product_id": 5,
+        "sku": "TMB-6IN-WH-44",
+        "barcode": "7895003",
+        "size": "US 10 / EU 44",
+        "color": "Wheat Nubuck",
+        "stock_quantity": 2,
+        "price": 198.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 26,
+        "product_id": 5,
+        "sku": "TMB-6IN-BK-42",
+        "barcode": "7895004",
+        "size": "US 9 / EU 42.5",
+        "color": "Black Nubuck",
+        "stock_quantity": 3,
+        "price": 198.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Smash V2 Leather Sneaker",
+    "brand": "Puma",
+    "category": "Casual",
+    "gender": "Unisex",
+    "base_price": 65.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&auto=format&fit=crop&q=80",
+    "description": "Tennis-inspired silhouette with clean leather exterior and durable rubber outsole.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 5,
+    "total_stock": 32,
+    "variants": [
+      {
+        "id": 18,
+        "product_id": 4,
+        "sku": "PUM-SM-WB-40",
+        "barcode": "7894001",
+        "size": "US 7 / EU 40",
+        "color": "Puma White / Black",
+        "stock_quantity": 5,
+        "price": 65.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 19,
+        "product_id": 4,
+        "sku": "PUM-SM-WB-41",
+        "barcode": "7894002",
+        "size": "US 8 / EU 41",
+        "color": "Puma White / Black",
+        "stock_quantity": 10,
+        "price": 65.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 20,
+        "product_id": 4,
+        "sku": "PUM-SM-WB-42",
+        "barcode": "7894003",
+        "size": "US 9 / EU 42.5",
+        "color": "Puma White / Black",
+        "stock_quantity": 8,
+        "price": 65.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 21,
+        "product_id": 4,
+        "sku": "PUM-SM-BK-41",
+        "barcode": "7894004",
+        "size": "US 8 / EU 41",
+        "color": "All Black",
+        "stock_quantity": 4,
+        "price": 65.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 22,
+        "product_id": 4,
+        "sku": "PUM-SM-BK-42",
+        "barcode": "7894005",
+        "size": "US 9 / EU 42.5",
+        "color": "All Black",
+        "stock_quantity": 5,
+        "price": 65.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Tilden Cap Leather Oxford",
+    "brand": "Clarks",
+    "category": "Formal",
+    "gender": "Men",
+    "base_price": 95.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&auto=format&fit=crop&q=80",
+    "description": "Classic dress shoe made from rich full-grain leather with cushioned OrthoLite insole.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 6,
+    "total_stock": 31,
+    "variants": [
+      {
+        "id": 12,
+        "product_id": 3,
+        "sku": "CLK-TIL-TN-41",
+        "barcode": "7893001",
+        "size": "US 8 / EU 41",
+        "color": "Dark Tan Brown",
+        "stock_quantity": 3,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 13,
+        "product_id": 3,
+        "sku": "CLK-TIL-TN-42",
+        "barcode": "7893002",
+        "size": "US 9 / EU 42.5",
+        "color": "Dark Tan Brown",
+        "stock_quantity": 6,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 14,
+        "product_id": 3,
+        "sku": "CLK-TIL-TN-44",
+        "barcode": "7893003",
+        "size": "US 10 / EU 44",
+        "color": "Dark Tan Brown",
+        "stock_quantity": 3,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 15,
+        "product_id": 3,
+        "sku": "CLK-TIL-BK-41",
+        "barcode": "7893004",
+        "size": "US 8 / EU 41",
+        "color": "Glossy Black",
+        "stock_quantity": 8,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 16,
+        "product_id": 3,
+        "sku": "CLK-TIL-BK-42",
+        "barcode": "7893005",
+        "size": "US 9 / EU 42.5",
+        "color": "Glossy Black",
+        "stock_quantity": 7,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 17,
+        "product_id": 3,
+        "sku": "CLK-TIL-BK-44",
+        "barcode": "7893006",
+        "size": "US 10 / EU 44",
+        "color": "Glossy Black",
+        "stock_quantity": 4,
+        "price": 95.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Ultraboost Light",
+    "brand": "Adidas",
+    "category": "Sports",
+    "gender": "Unisex",
+    "base_price": 160.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=600&auto=format&fit=crop&q=80",
+    "description": "Epic energy return with 30% lighter Boost material and Primeknit+ upper.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 5,
+    "total_stock": 30,
+    "variants": [
+      {
+        "id": 7,
+        "product_id": 2,
+        "sku": "ADI-UB-WH-41",
+        "barcode": "7892001",
+        "size": "US 8 / EU 41",
+        "color": "Cloud White",
+        "stock_quantity": 7,
+        "price": 160.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 8,
+        "product_id": 2,
+        "sku": "ADI-UB-WH-42",
+        "barcode": "7892002",
+        "size": "US 9 / EU 42.5",
+        "color": "Cloud White",
+        "stock_quantity": 9,
+        "price": 160.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 9,
+        "product_id": 2,
+        "sku": "ADI-UB-WH-44",
+        "barcode": "7892003",
+        "size": "US 10 / EU 44",
+        "color": "Cloud White",
+        "stock_quantity": 1,
+        "price": 160.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 10,
+        "product_id": 2,
+        "sku": "ADI-UB-BK-42",
+        "barcode": "7892004",
+        "size": "US 9 / EU 42.5",
+        "color": "Core Black",
+        "stock_quantity": 5,
+        "price": 160.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 11,
+        "product_id": 2,
+        "sku": "ADI-UB-BK-44",
+        "barcode": "7892005",
+        "size": "US 10 / EU 44",
+        "color": "Core Black",
+        "stock_quantity": 8,
+        "price": 160.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Air Zoom Pegasus 40",
+    "brand": "Nike",
+    "category": "Running",
+    "gender": "Men",
+    "base_price": 130.0,
+    "cost_price": 0.0,
+    "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
+    "description": "Responsive everyday running shoe with dual Zoom Air units and engineered mesh.",
+    "created_at": "2026-10-16 15:13:11",
+    "variant_count": 6,
+    "total_stock": 41,
+    "variants": [
+      {
+        "id": 1,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-RD-41",
+        "barcode": "7891001",
+        "size": "US 8 / EU 41",
+        "color": "Crimson Red",
+        "stock_quantity": 6,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 2,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-RD-42",
+        "barcode": "7891002",
+        "size": "US 9 / EU 42.5",
+        "color": "Crimson Red",
+        "stock_quantity": 7,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 3,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-RD-44",
+        "barcode": "7891003",
+        "size": "US 10 / EU 44",
+        "color": "Crimson Red",
+        "stock_quantity": 4,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 4,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-BK-41",
+        "barcode": "7891004",
+        "size": "US 8 / EU 41",
+        "color": "Midnight Black",
+        "stock_quantity": 10,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 5,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-BK-42",
+        "barcode": "7891005",
+        "size": "US 9 / EU 42.5",
+        "color": "Midnight Black",
+        "stock_quantity": 12,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      },
+      {
+        "id": 6,
+        "product_id": 1,
+        "sku": "NIKE-PEG40-BK-44",
+        "barcode": "7891006",
+        "size": "US 10 / EU 44",
+        "color": "Midnight Black",
+        "stock_quantity": 2,
+        "price": 130.0,
+        "created_at": "2026-10-16 15:13:11"
+      }
+    ]
+  }
+]

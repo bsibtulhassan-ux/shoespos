@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SoleMate - Shoe Shop POS & Inventory</title>
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SoleMate POS">
+    <link rel="apple-touch-icon" href="/static/icons/icon.svg">
+
+    <!-- 100% Offline Local Tailwind CSS -->
+    <script src="/static/vendor/tailwind.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- 100% Offline Local Lucide Icons -->
+    <script src="/static/vendor/lucide.min.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 flex flex-col h-screen overflow-hidden select-none">
+
+    <!-- ================= ADMIN PIN MODAL (Appears ONLY for Admin actions) ================= -->
+    <div id="adminPinModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-7 w-full max-w-xs shadow-2xl text-center flex flex-col items-center animate-fade-in">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center mb-2">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-black text-white">Manager Authorization</h3>
+            <p class="text-[11px] text-slate-400 mb-3" id="adminPinPromptText">Enter Admin PIN to access finances & settings</p>
+
+            <!-- PIN Dots -->
+            <div class="flex items-center justify-center gap-2.5 py-1.5 mb-2">
+                <div class="pin-dot w-3 h-3 rounded-full border-2 border-slate-600 bg-slate-800"></div>
+                <div class="pin-dot w-3 h-3 rounded-full border-2 border-slate-600 bg-slate-800"></div>
+                <div class="pin-dot w-3 h-3 rounded-full border-2 border-slate-600 bg-slate-800"></div>
+                <div class="pin-dot w-3 h-3 rounded-full border-2 border-slate-600 bg-slate-800"></div>
+            </div>
+            <p id="adminPinErrorMsg" class="text-[11px] text-rose-400 font-semibold min-h-4 mb-1"></p>
+
+            <!-- Touch Keypad -->
+            <div class="grid grid-cols-3 gap-2 w-full max-w-[230px] mx-auto mb-3">
+                <button type="button" onclick="pressAdminPin('1')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">1</button>
+                <button type="button" onclick="pressAdminPin('2')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">2</button>
+                <button type="button" onclick="pressAdminPin('3')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">3</button>
+                <button type="button" onclick="pressAdminPin('4')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">4</button>
+                <button type="button" onclick="pressAdminPin('5')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">5</button>
+                <button type="button" onclick="pressAdminPin('6')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">6</button>
+                <button type="button" onclick="pressAdminPin('7')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">7</button>
+                <button type="button" onclick="pressAdminPin('8')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">8</button>
+                <button type="button" onclick="pressAdminPin('9')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">9</button>
+                <button type="button" onclick="clearAdminPin()" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 font-semibold text-[10px] border border-slate-700/60">CLEAR</button>
+                <button type="button" onclick="pressAdminPin('0')" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-amber-600 text-white font-bold text-base border border-slate-700/60 transition">0</button>
+                <button type="button" onclick="deleteAdminPinDigit()" class="h-11 rounded-xl bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold text-base border border-slate-700/60 flex items-center justify-center">⌫</button>
+            </div>
+
+            <p class="text-[10px] text-slate-500 mb-3">Default Admin PIN: <strong class="text-amber-400">1234</strong></p>
+
+            <button type="button" onclick="closeAdminPinModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700">
+                Cancel / Return to Counter
+            </button>
+        </div>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white px-3 sm:px-5 py-2.5 flex items-center justify-between shadow-md border-b border-slate-800 shrink-0">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
+                <i data-lucide="footprints" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="text-sm sm:text-base font-bold tracking-tight flex items-center gap-1.5">
+                    <span id="headerStoreName">SoleMate Shoes</span>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-medium px-1.5 py-0.2 rounded-full border border-emerald-400/30">Ready</span>
+                </h1>
+                <p class="text-[10px] text-slate-400 hidden sm:block">Shoe Store & Counter Billing</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center space-x-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60 overflow-x-auto">
+            <button onclick="switchTab('pos')" id="tab-pos" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 bg-blue-600 text-white shadow shrink-0">
+                <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">POS Counter</span>
+            </button>
+            <button onclick="switchTab('inventory')" id="tab-inventory" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/50 shrink-0">
+                <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Inventory</span>
+                <span id="lowStockBadge" class="hidden ml-1 px-1.5 py-0.2 text-[9px] bg-amber-500/30 text-amber-300 rounded-full border border-amber-500/40">0</span>
+            </button>
+            <button onclick="switchTab('orders')" id="tab-orders" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/50 shrink-0">
+                <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Receipts</span>
+            </button>
+            <button onclick="attemptAdminTab('analytics')" id="tab-analytics" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/50 shrink-0">
+                <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Analytics</span>
+                <span class="admin-lock-icon text-[9px] text-amber-400">🔒</span>
+            </button>
+            <button onclick="attemptAdminTab('settings')" id="tab-settings" class="tab-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 text-slate-300 hover:text-white hover:bg-slate-700/50 shrink-0">
+                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                <span class="admin-lock-icon text-[9px] text-amber-400">🔒</span>
+            </button>
+        </nav>
+
+        <!-- Right Header: Android App + Role Status -->
+        <div class="flex items-center space-x-2 sm:space-x-3 text-xs">
+            <!-- Server Status Pill -->
+            <div class="hidden sm:flex items-center gap-1.5 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700 text-[10px]" id="serverPill">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="serverLiveDot"></span>
+                <span class="text-emerald-300 font-semibold" id="serverLiveText">Server Online</span>
+            </div>
+
+            <button onclick="openAndroidModal()" class="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 rounded-lg flex items-center gap-1.5 font-bold text-[11px] transition">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span class="hidden md:inline">Android App</span>
+            </button>
+
+            <!-- Mode Indicator & Switch Button -->
+            <div id="roleBadgeContainer" class="flex items-center gap-1.5 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+                <div class="w-2 h-2 rounded-full bg-emerald-400" id="userStatusDot"></div>
+                <span id="roleBadgeText" class="font-bold text-[11px] text-slate-200">Counter Mode</span>
+                <button type="button" id="roleActionBtn" onclick="toggleAdminMode()" class="ml-1 text-[10px] font-bold text-amber-400 hover:underline">
+                    Unlock Admin 🔒
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Server Offline Warning Banner with 1-Click Browser Auto-Starter -->
+    <div id="serverOfflineBanner" class="hidden bg-gradient-to-r from-rose-700 via-rose-600 to-amber-600 text-white px-4 py-3 text-xs font-bold flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 shadow-lg border-b border-rose-800">
+        <div class="flex items-center gap-2.5">
+            <span class="text-xl animate-bounce">⚠️</span>
+            <div>
+                <p class="text-sm font-extrabold tracking-wide">Python سرور فی الحال بند ہے (Server Offline)</p>
+                <p class="text-[11px] text-rose-100 font-normal">نیچے دیے گئے سبز بٹن پر کلک کریں تاکہ سافٹ ویئر کا سرور فوراً آن ہو جائے۔</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <a href="solemate://start" onclick="handleStartServerClick(event)" id="startServerBrowserBtn" 
+               class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold shadow-md flex items-center gap-1.5 transition transform hover:scale-105 active:scale-95 cursor-pointer">
+                <span>⚡ سرور آن کریں (Start Server)</span>
+            </a>
+            <button onclick="retryServerConnection()" class="px-3 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold border border-white/30 flex items-center gap-1 transition">
+                <span>🔄 دوبارہ چیک کریں (Retry)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container Content -->
+    <main class="flex-1 flex overflow-hidden">
+
+        <!-- ================= TAB 1: POS COUNTER ================= -->
+        <section id="view-pos" class="flex-1 flex flex-col md:flex-row overflow-hidden">
+            <!-- Left: Shoe Catalog Grid & Filters -->
+            <div class="flex-1 flex flex-col p-3 sm:p-4 overflow-hidden border-r border-slate-200 bg-slate-50">
+                <div class="flex flex-col sm:flex-row gap-2.5 mb-2.5">
+                    <div class="relative flex-1">
+                        <i data-lucide="scan-barcode" class="w-5 h-5 absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="posSearchInput" placeholder="Scan Barcode or Search Shoe, Brand, Size, SKU..." 
+                            class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 shadow-xs transition"
+                            autocomplete="off">
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-xl text-[11px] font-medium shrink-0">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-blue-600"></i>
+                        <span>Scan / Press Enter to add</span>
+                    </div>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-2 shrink-0 scrollbar-none" id="categoryPills">
+                    <button onclick="filterCategory('All')" class="cat-pill active px-3 py-1 rounded-full text-xs font-medium bg-blue-600 text-white shadow-xs transition">All Shoes</button>
+                    <button onclick="filterCategory('Running')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Running</button>
+                    <button onclick="filterCategory('Sports')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Sports</button>
+                    <button onclick="filterCategory('Casual')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Casual</button>
+                    <button onclick="filterCategory('Formal')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Formal</button>
+                    <button onclick="filterCategory('Boots')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Boots</button>
+                    <button onclick="filterCategory('Sandals')" class="cat-pill px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Sandals</button>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="flex-1 overflow-y-auto pr-1">
+                    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 pt-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <div id="noProductsFound" class="hidden flex-col items-center justify-center py-16 text-slate-400">
+                        <i data-lucide="package-search" class="w-12 h-12 mb-2 text-slate-300"></i>
+                        <p class="text-sm font-medium">No shoes matching your search</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: POS Cart & Counter Billing -->
+            <div class="w-full md:w-96 xl:w-[410px] bg-white flex flex-col shadow-lg shrink-0 border-t md:border-t-0 md:border-l border-slate-200 max-h-[50vh] md:max-h-full">
+                <!-- Cart Header & Customer Selector -->
+                <div class="p-3 border-b border-slate-200 bg-slate-50/70 shrink-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                                <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+                            </span>
+                            <h2 class="font-bold text-slate-800 text-xs sm:text-sm">Customer Cart</h2>
+                        </div>
+                        <button onclick="clearCart()" class="text-xs text-rose-500 hover:text-rose-700 font-medium flex items-center gap-1 hover:underline">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                        <div class="relative flex-1">
+                            <i data-lucide="user" class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400"></i>
+                            <input type="text" id="customerSearchInput" placeholder="Walk-in Customer"
+                                class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <button onclick="openQuickCustomerModal()" title="Add New Customer" class="p-1.5 bg-slate-200 hover:bg-slate-300 rounded-lg text-slate-700 transition">
+                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cart Items List -->
+                <div class="flex-1 overflow-y-auto p-2.5 space-y-2" id="cartItemsList">
+                    <div id="emptyCartNotice" class="h-full flex flex-col items-center justify-center text-slate-400 py-8">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-300 mb-2">
+                            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500">Cart is empty</p>
+                        <p class="text-[10px] text-slate-400 text-center max-w-[180px]">Select a shoe model & size or scan barcode</p>
+                    </div>
+                </div>
+
+                <!-- Cart Calculations & Totals -->
+                <div class="p-3 border-t border-slate-200 bg-slate-50 space-y-2 shrink-0">
+                    <div class="space-y-1 text-xs text-slate-600">
+                        <div class="flex justify-between">
+                            <span>Subtotal (<span id="cartTotalItemsCount">0</span> pairs):</span>
+                            <span class="font-semibold text-slate-800" id="cartSubtotal">$0.00</span>
+                        </div>
+
+                        <!-- Discount Option -->
+                        <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/80">
+                            <div class="flex items-center gap-1.5">
+                                <span>Discount:</span>
+                                <select id="cartDiscountType" onchange="calculateCartTotals()" class="text-xs bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:outline-none">
+                                    <option value="none">None</option>
+                                    <option value="percent">% Off</option>
+                                    <option value="fixed">Flat $</option>
+                                </select>
+                                <input type="number" id="cartDiscountVal" oninput="calculateCartTotals()" value="0" min="0" step="1" 
+                                    class="w-12 text-xs bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:outline-none">
+                            </div>
+                            <span class="text-rose-600 font-semibold" id="cartDiscountAmount">-$0.00</span>
+                        </div>
+
+                        <!-- Tax Option (Hidden / Permanently Disabled) -->
+                        <div id="cartTaxRow" class="hidden justify-between items-center pt-1 border-t border-slate-200/80">
+                            <span class="flex items-center gap-1">Tax:</span>
+                            <span class="font-semibold text-slate-800" id="cartTaxAmount">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Banner -->
+                    <div class="bg-slate-900 text-white p-2.5 rounded-xl flex items-center justify-between shadow-inner">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block font-medium">GRAND TOTAL</span>
+                            <span class="text-xl font-black tracking-tight" id="cartGrandTotal">$0.00</span>
+                        </div>
+                        <span class="text-[11px] px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-lg border border-blue-400/30 font-medium" id="cartPairSummary">
+                            0 Pairs
+                        </span>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button id="checkoutBtn" onclick="openCheckoutModal()" disabled
+                        class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        <span>Proceed to Payment</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: SHOE INVENTORY ================= -->
+        <section id="view-inventory" class="hidden flex-1 flex flex-col p-4 sm:p-5 overflow-hidden bg-slate-50">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 shrink-0">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900">Shoe Inventory & Stock</h2>
+                    <p class="text-xs text-slate-500">Track shoe variants, sizes, colors, and quantities</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleLowStockFilter()" id="lowStockToggleBtn" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 hover:bg-amber-50 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-500"></i>
+                        <span>Low Stock Only</span>
+                    </button>
+                    <!-- Add Shoe: prompts for admin PIN if not admin -->
+                    <button onclick="requireAdminAction(openAddProductModal)" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                        <span>Add Shoe Model</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inventory Search -->
+            <div class="mb-3 shrink-0">
+                <div class="relative max-w-md">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                    <input type="text" id="inventorySearchInput" oninput="renderInventoryTable()" placeholder="Search shoes by brand, name, or SKU..."
+                        class="w-full pl-9 pr-4 py-1.5 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+                <div class="overflow-y-auto flex-1">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead class="bg-slate-100/80 sticky top-0 border-b border-slate-200 text-slate-600 uppercase font-bold text-[10px] tracking-wider z-10">
+                            <tr>
+                                <th class="py-2.5 px-3">Shoe Model</th>
+                                <th class="py-2.5 px-3">Brand & Category</th>
+                                <th class="py-2.5 px-3">Variants (Size / Color / Stock)</th>
+                                <th class="py-2.5 px-3 text-right">Selling Price</th>
+                                <th class="py-2.5 px-3 text-right cost-price-col">Cost Price</th>
+                                <th class="py-2.5 px-3 text-center">Total Stock</th>
+                                <th class="py-2.5 px-3 text-center admin-action-col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: ORDERS & RECEIPTS ================= -->
+        <section id="view-orders" class="hidden flex-1 flex flex-col p-4 sm:p-5 overflow-hidden bg-slate-50">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 shrink-0">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900">Order Transactions & Receipts</h2>
+                    <p class="text-xs text-slate-500">View past sales, manage Udhaar Khata, and reprint receipts</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center bg-white border border-slate-200 rounded-xl p-1 text-xs shadow-xs">
+                        <button onclick="filterOrdersTab('all')" id="orderFilterBtn-all" class="px-2.5 py-1 rounded-lg font-bold bg-blue-600 text-white shadow-xs">All</button>
+                        <button onclick="filterOrdersTab('udhaar')" id="orderFilterBtn-udhaar" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 flex items-center gap-1 transition">
+                            <span>📒 Udhaar Khata</span>
+                            <span id="udhaarCountBadge" class="hidden px-1.5 py-0.2 text-[9px] bg-rose-500 text-white rounded-full font-bold">0</span>
+                        </button>
+                        <button onclick="filterOrdersTab('completed')" id="orderFilterBtn-completed" class="px-2.5 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition">Paid</button>
+                    </div>
+                    <div class="relative w-52 sm:w-60">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2 text-slate-400"></i>
+                        <input type="text" id="ordersSearchInput" oninput="loadOrders()" placeholder="Search invoice, customer..."
+                            class="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+                <div class="overflow-y-auto flex-1">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead class="bg-slate-100/80 sticky top-0 border-b border-slate-200 text-slate-600 uppercase font-bold text-[10px] tracking-wider z-10">
+                            <tr>
+                                <th class="py-2.5 px-3">Invoice #</th>
+                                <th class="py-2.5 px-3">Date & Time</th>
+                                <th class="py-2.5 px-3">Customer</th>
+                                <th class="py-2.5 px-3">Cashier</th>
+                                <th class="py-2.5 px-3">Payment</th>
+                                <th class="py-2.5 px-3 text-right">Total Amount</th>
+                                <th class="py-2.5 px-3 text-center">Status</th>
+                                <th class="py-2.5 px-3 text-center">Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: ANALYTICS DASHBOARD (ADMIN PROTECTED) ================= -->
+        <section id="view-analytics" class="hidden flex-1 flex flex-col p-5 overflow-y-auto bg-slate-50">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-slate-900">Store Analytics & Financial Valuation</h2>
+                <p class="text-xs text-slate-500">Business performance metrics, revenue, and profit inventory valuation</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                    <span class="text-xs font-semibold text-slate-500 block mb-1">Today's Revenue</span>
+                    <h3 class="text-2xl font-black text-slate-900" id="statTodaySales">$0.00</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5"><span id="statTodayOrders" class="font-semibold text-emerald-600">0</span> orders today</p>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                    <span class="text-xs font-semibold text-slate-500 block mb-1">Pairs Sold Today</span>
+                    <h3 class="text-2xl font-black text-slate-900" id="statPairsToday">0</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Total shoe pairs checked out</p>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                    <span class="text-xs font-semibold text-slate-500 block mb-1">Total Stock in Store</span>
+                    <h3 class="text-2xl font-black text-slate-900" id="statTotalStock">0</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Pairs across all sizes & colors</p>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                    <span class="text-xs font-semibold text-slate-500 block mb-1">Inventory Valuation</span>
+                    <h3 class="text-2xl font-black text-slate-900" id="statRetailValue">$0.00</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Cost value: <span id="statCostValue" class="font-medium text-slate-700">$0.00</span></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                    <h4 class="font-bold text-slate-900 text-xs mb-3 flex items-center gap-1.5">
+                        <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> Top Selling Shoes
+                    </h4>
+                    <div id="topSellingList" class="space-y-2"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                    <h4 class="font-bold text-slate-900 text-xs mb-3 flex items-center gap-1.5">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500"></i> Low Stock Shoes Notice
+                    </h4>
+                    <div id="lowStockSummaryList" class="space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: STORE SETTINGS (ADMIN PROTECTED) ================= -->
+        <section id="view-settings" class="hidden flex-1 flex flex-col p-5 overflow-y-auto bg-slate-50">
+            <div class="max-w-2xl bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Store & Receipt Configuration</h2>
+                    <p class="text-xs text-slate-500">Customize store details printed on thermal receipts</p>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Store / Shop Name</label>
+                        <input type="text" id="settingStoreName" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Store Phone / Contact</label>
+                            <input type="text" id="settingStorePhone" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Currency Symbol</label>
+                            <input type="text" id="settingCurrency" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none" placeholder="$ or Rs or €">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="hidden">
+                            <label class="block font-semibold text-slate-700 mb-1">Sales Tax Rate (%)</label>
+                            <input type="number" id="settingTaxRate" value="0.0" step="0.1" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Store Address</label>
+                            <input type="text" id="settingStoreAddress" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Receipt Footer Note / Return Policy</label>
+                        <textarea id="settingReceiptFooter" rows="3" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="pt-1">
+                        <button onclick="saveStoreSettings()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition flex items-center gap-1.5">
+                            <i data-lucide="save" class="w-4 h-4"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal: Android App Connect & Instructions -->
+    <div id="androidModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 animate-fade-in flex flex-col">
+            <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
+                    Use as Android App (Mobile & Tablet)
+                </h3>
+                <button onclick="closeAndroidModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 text-xs">
+                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-base shrink-0">
+                        <i data-lucide="wifi" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-emerald-950 block">Wi-Fi Connection Link</span>
+                        <a id="androidIpLink" href="#" target="_blank" class="font-mono font-black text-blue-600 text-sm hover:underline">http://192.168.1.x:8000</a>
+                    </div>
+                </div>
+
+                <div class="space-y-2.5 text-slate-700">
+                    <p class="font-bold text-slate-900 text-xs">📲 Android Phone ya Tablet par chalane ka aasan tareeqa:</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
+                        <li>Apne Android mobile/tablet ko usi <strong>Wi-Fi ya Hotspot</strong> se connect karein jisse yeh computer connect hai.</li>
+                        <li>Mobile mein <strong>Google Chrome</strong> browser kholein.</li>
+                        <li>Browser ke address bar mein yeh link daalein: <strong id="androidCopyUrl" class="font-mono text-blue-700">http://...</strong></li>
+                        <li>Chrome ke top right par <strong>3 dots (⋮)</strong> par click karein aur <strong>"Install app" / "Add to Home screen"</strong> par click karein.</li>
+                        <li><strong>Mubarak ho!</strong> Ab aapke phone ki home screen par <em>SoleMate POS</em> app icon ban jayega aur yeh bilkul real Android App ki tarah khulega!</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 border-t border-slate-200 text-right">
+                <button onclick="closeAndroidModal()" class="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1: Checkout & Payment -->
+    <div id="checkoutModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-200 animate-fade-in flex flex-col">
+            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-sm flex items-center gap-2">
+                        <i data-lucide="credit-card" class="w-4 h-4 text-blue-400"></i> Complete Payment
+                    </h3>
+                    <p class="text-[11px] text-slate-400">Select payment method and collect payment</p>
+                </div>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-3.5">
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
+                    <span class="text-xs font-semibold text-blue-900">Total Due:</span>
+                    <span class="text-2xl font-black text-blue-600" id="checkoutDueAmount">$0.00</span>
+                </div>
+
+                <!-- Payment Type Switcher: Instant Pay vs Udhaar -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Payment Type / ادائیگی کی قسم</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                        <button type="button" onclick="switchPaymentMode('instant')" id="payModeBtn-instant" 
+                                class="py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-blue-600 text-white shadow-xs transition">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>⚡ Instant Pay (نقد / کارڈ)</span>
+                        </button>
+                        <button type="button" onclick="switchPaymentMode('udhaar')" id="payModeBtn-udhaar" 
+                                class="py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900 transition">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                            <span>📒 Udhaar / Khata (ادھار)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section A: Instant Pay Methods (Cash / Card / Wallet) -->
+                <div id="instantPaySection" class="space-y-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Instant Method</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" onclick="selectPaymentMethod('Cash')" id="payBtn-Cash" class="pay-method-btn active py-2 px-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-700 text-xs font-bold flex flex-col items-center gap-1 transition">
+                                <i data-lucide="banknote" class="w-4 h-4"></i> Cash
+                            </button>
+                            <button type="button" onclick="selectPaymentMethod('Card')" id="payBtn-Card" class="pay-method-btn py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold flex flex-col items-center gap-1 transition">
+                                <i data-lucide="credit-card" class="w-4 h-4"></i> Card
+                            </button>
+                            <button type="button" onclick="selectPaymentMethod('Digital Wallet')" id="payBtn-Digital Wallet" class="pay-method-btn py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-bold flex flex-col items-center gap-1 transition">
+                                <i data-lucide="smartphone" class="w-4 h-4"></i> QR / Wallet
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cashDetailsBox" class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="block text-xs font-bold text-slate-700">Cash Received from Customer</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-slate-400 font-bold" id="cashCurrencyPrefix">$</span>
+                            <input type="text" inputmode="decimal" id="cashTenderedInput" oninput="calculateChange()" autocomplete="off"
+                                class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-base font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-center gap-1.5 pt-1" id="quickCashButtons"></div>
+                        <div class="flex items-center justify-between pt-1.5 border-t border-slate-200">
+                            <span class="text-xs font-bold text-slate-600">Change to Return:</span>
+                            <span class="text-base font-black text-emerald-600 font-mono" id="cashChangeDisplay">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section B: Udhaar (Khata) Form -->
+                <div id="udhaarSection" class="hidden space-y-3 bg-amber-50/70 p-3.5 rounded-xl border border-amber-200/80">
+                    <div class="flex items-center gap-2 text-amber-800 text-xs font-bold">
+                        <i data-lucide="book-marked" class="w-4 h-4 text-amber-600"></i>
+                        <span>Udhaar Khata Details (کسٹمر کا نام ضروری ہے)</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-800 mb-1">
+                            Customer Name / گاہک کا نام <span class="text-rose-500 font-bold">* (ضروری ہے تاکہ یاد رہے)</span>
+                        </label>
+                        <input type="text" id="udhaarCustNameInput" placeholder="e.g. Aslam Bhai, Tariq Butt..."
+                            class="w-full px-3 py-2 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-xs">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Mobile / فون نمبر (اختیاری)</label>
+                            <input type="text" id="udhaarCustPhoneInput" placeholder="0300-1234567"
+                                class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Advance Paid / پیشگی رقم</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-1.5 text-slate-400 font-bold text-xs" id="udhaarCurrencyPrefix">PKR</span>
+                                <input type="text" inputmode="decimal" id="udhaarAdvancePaidInput" oninput="calculateUdhaarRemaining()" placeholder="0" autocomplete="off"
+                                    class="w-full pl-11 pr-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2.5 bg-white rounded-lg border border-amber-200 flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-900">Baqaya Udhaar (بقایا ادھار):</span>
+                        <span class="text-base font-black text-rose-600 font-mono" id="udhaarRemainingDisplay">$0.00</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Receipt Note (Optional)</label>
+                    <input type="text" id="checkoutOrderNotes" placeholder="e.g. Gift wrapped, special discount..."
+                        class="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none">
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2">
+                <button onclick="closeCheckoutModal()" class="px-3.5 py-1.5 border border-slate-300 hover:bg-slate-100 rounded-xl text-xs font-semibold text-slate-700">
+                    Cancel
+                </button>
+                <button onclick="submitOrderCheckout()" id="confirmPayBtn" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Confirm Sale & Print Receipt</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Thermal POS Receipt View & Print -->
+    <div id="receiptModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden border border-slate-200 animate-fade-in flex flex-col my-auto">
+            <div class="p-3 bg-slate-900 text-white flex items-center justify-between no-print">
+                <span class="text-xs font-bold flex items-center gap-1.5">
+                    <i data-lucide="printer" class="w-4 h-4 text-blue-400"></i> Sales Receipt
+                </span>
+                <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div id="printableReceipt" class="p-5 font-mono text-xs text-slate-800 bg-white">
+                <div class="text-center border-b border-dashed border-slate-400 pb-3 mb-3">
+                    <h2 class="text-base font-extrabold uppercase tracking-wider" id="receiptStoreName">SoleMate Shoes</h2>
+                    <p class="text-[11px] text-slate-600" id="receiptStoreAddress">123 Commercial Plaza</p>
+                    <p class="text-[11px] text-slate-600" id="receiptStorePhone">Tel: +1 (555) 789-2436</p>
+                    <p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">*** SALES RECEIPT ***</p>
+                </div>
+
+                <div class="space-y-0.5 text-[11px] border-b border-dashed border-slate-400 pb-2 mb-2">
+                    <div class="flex justify-between"><span>Invoice:</span><span class="font-bold" id="receiptInvoiceNo">INV-0000</span></div>
+                    <div class="flex justify-between"><span>Date:</span><span id="receiptDateTime">--</span></div>
+                    <div class="flex justify-between"><span>Cashier:</span><span id="receiptCashierName">Staff</span></div>
+                    <div class="flex justify-between"><span>Customer:</span><span id="receiptCustomerName">Walk-in</span></div>
+                </div>
+
+                <div class="border-b border-dashed border-slate-400 pb-2 mb-2">
+                    <table class="w-full text-left text-[11px]">
+                        <thead>
+                            <tr class="border-b border-slate-300">
+                                <th class="py-1">Item / Size</th>
+                                <th class="py-1 text-center">Qty</th>
+                                <th class="py-1 text-right">Price</th>
+                                <th class="py-1 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptItemsBody" class="divide-y divide-dotted divide-slate-200"></tbody>
+                    </table>
+                </div>
+
+                <div class="space-y-1 text-[11px] border-b border-dashed border-slate-400 pb-2 mb-2">
+                    <div class="flex justify-between"><span>Subtotal:</span><span id="receiptSubtotal">$0.00</span></div>
+                    <div class="flex justify-between text-rose-600" id="receiptDiscountRow"><span>Discount:</span><span id="receiptDiscount">-$0.00</span></div>
+                    <div class="flex justify-between" id="receiptTaxRow"><span>Tax:</span><span id="receiptTax">$0.00</span></div>
+                    <div class="flex justify-between font-extrabold text-sm pt-1 border-t border-slate-300"><span>TOTAL:</span><span id="receiptTotal">$0.00</span></div>
+                    <div class="flex justify-between pt-1"><span>Payment Method:</span><span class="font-semibold" id="receiptPaymentMethod">Cash</span></div>
+                    <div class="flex justify-between" id="receiptTenderedRow"><span>Cash Tendered:</span><span id="receiptTendered">$0.00</span></div>
+                    <div class="flex justify-between" id="receiptChangeRow"><span>Change Given:</span><span class="font-bold text-emerald-700" id="receiptChange">$0.00</span></div>
+                    <div class="flex justify-between text-amber-700 font-bold hidden" id="receiptAdvanceRow"><span>Advance Paid:</span><span id="receiptAdvance">$0.00</span></div>
+                    <div class="flex justify-between text-rose-600 font-extrabold hidden" id="receiptUdhaarRow"><span>Baqaya Udhaar:</span><span id="receiptUdhaarAmount">$0.00</span></div>
+                    <div class="flex justify-between text-slate-800 font-bold hidden" id="receiptUdhaarStatusRow"><span>Khata Status:</span><span id="receiptUdhaarStatus" class="text-rose-600">UNPAID</span></div>
+                </div>
+
+                <div class="text-center pt-2 space-y-2">
+                    <p class="text-[10px] text-slate-600 leading-tight" id="receiptFooterNote"></p>
+                    <div class="py-1 flex flex-col items-center justify-center">
+                        <div class="tracking-widest font-mono text-base font-bold select-none text-slate-800">||||| | |||| ||| ||||| ||</div>
+                        <span class="text-[9px] text-slate-500 font-mono" id="receiptBarcodeText">INV-000000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between no-print">
+                <button onclick="closeReceiptModal()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700">Close</button>
+                <button onclick="window.print()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow flex items-center gap-1.5">
+                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Add New Shoe Model with Variant Generator (Admin Only) -->
+    <div id="addProductModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden border border-slate-200 animate-fade-in flex flex-col my-auto max-h-[90vh]">
+            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-xs sm:text-sm flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-blue-400"></i> Add Shoe Model & Size Matrix
+                </h3>
+                <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-3.5 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Shoe Model Name *</label>
+                        <input type="text" id="newShoeName" placeholder="e.g. Air Max Alpha 5" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Brand *</label>
+                        <input type="text" id="newShoeBrand" placeholder="e.g. Nike, Adidas, Clarks..." class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Category *</label>
+                        <select id="newShoeCategory" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                            <option value="Running">Running</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Casual">Casual</option>
+                            <option value="Formal">Formal</option>
+                            <option value="Boots">Boots</option>
+                            <option value="Sandals">Sandals</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Gender / Type *</label>
+                        <select id="newShoeGender" onchange="switchSizeGroup(this.value)" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none font-semibold">
+                            <option value="Gents">Gents (مردانہ: سائز 6 تا 12)</option>
+                            <option value="Ladies">Ladies (زنانیہ: سائز 6 تا 12)</option>
+                            <option value="Kids">Kids (بچے: سائز 1 تا 5)</option>
+                            <option value="Small Kids">Small Kids (چھوٹے بچے: سائز 4 تا 13)</option>
+                            <option value="Unisex">Unisex</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Stock / Base Price (PKR) *</label>
+                        <input type="number" id="newShoePrice" step="1" placeholder="2500" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Cost / Purchase Price (PKR)</label>
+                        <input type="number" id="newShoeCostPrice" step="1" placeholder="1800" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Image URL (Optional)</label>
+                        <input type="text" id="newShoeImage" placeholder="Leave blank for shoe icon" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Shoe Sizes & Stock Pairs (سائز اور جوڑوں کا اسٹاک) -->
+                <div class="bg-blue-50/70 p-3.5 rounded-2xl border border-blue-200/90 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="font-extrabold text-blue-900 text-xs sm:text-sm flex items-center gap-1.5">
+                                <i data-lucide="layers" class="w-4 h-4 text-blue-600"></i> 
+                                سائز کی کیٹیگری اور جوڑوں کا اسٹاک (Sizes & Stock Pairs)
+                            </span>
+                            <p class="text-[10px] text-slate-500 mt-0.5">نیچے کیٹیگری منتخب کریں اور ہر سائز کے جوڑوں کی تعداد ہاتھ سے درج کریں:</p>
+                        </div>
+                        <span id="newShoeTotalPairsBadge" class="px-2.5 py-1 rounded-full text-xs font-black bg-blue-600 text-white shadow-2xs self-start sm:self-auto">
+                            ٹوٹل: 0 جوڑے
+                        </span>
+                    </div>
+
+                    <!-- 4 Category Selector Tabs: Gents, Ladies, Kids, Small Kids -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 p-1 bg-white rounded-xl border border-blue-200 shadow-2xs" id="sizeGroupTabsContainer">
+                        <button type="button" onclick="switchSizeGroup('Gents')" id="tab-Gents"
+                                class="size-group-tab py-1.5 px-2 rounded-lg text-xs font-black flex items-center justify-center gap-1 border transition bg-blue-600 text-white border-blue-600 shadow-xs">
+                            <span>👔 Gents</span>
+                            <span class="text-[10px] opacity-80">(6-12)</span>
+                        </button>
+                        <button type="button" onclick="switchSizeGroup('Ladies')" id="tab-Ladies"
+                                class="size-group-tab py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition">
+                            <span>👠 Ladies</span>
+                            <span class="text-[10px] opacity-80">(6-12)</span>
+                        </button>
+                        <button type="button" onclick="switchSizeGroup('Kids')" id="tab-Kids"
+                                class="size-group-tab py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition">
+                            <span>👦 Kids</span>
+                            <span class="text-[10px] opacity-80">(1-5)</span>
+                        </button>
+                        <button type="button" onclick="switchSizeGroup('Small Kids')" id="tab-SmallKids"
+                                class="size-group-tab py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition">
+                            <span>👶 Small Kids</span>
+                            <span class="text-[10px] opacity-80">(4-13)</span>
+                        </button>
+                    </div>
+
+                    <!-- Quick Add Size Buttons (Changes dynamically based on selected group) -->
+                    <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-blue-200/70">
+                        <span class="text-[10px] font-bold text-slate-600" id="quickButtonsLabel">فوری سائز بٹن:</span>
+                        <div id="quickSizeButtonsList" class="flex items-center gap-1 flex-wrap">
+                            <!-- Populated with + buttons based on Gents/Ladies/Kids/Small Kids -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Bulk Set Pairs helper -->
+                    <div class="flex items-center justify-between gap-2 bg-blue-100/60 p-2 rounded-xl border border-blue-200 text-xs">
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-bold text-blue-900 text-[11px]">سب کے جوڑے ایک ساتھ سیٹ کریں:</span>
+                            <input type="number" id="bulkPairsInput" min="0" value="3" class="w-12 p-1 text-center font-bold bg-white border border-blue-300 rounded focus:outline-none text-xs">
+                            <button type="button" onclick="applyBulkPairs()" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold text-[10px] shadow-2xs">سب پر لگائیں</button>
+                        </div>
+                        <span class="text-[10px] text-slate-500 hidden sm:inline">(نیچے ہر سائز کو الگ بھی تبدیل کر سکتے ہیں)</span>
+                    </div>
+
+                    <!-- Dynamic Size Rows Container -->
+                    <div class="bg-white rounded-xl border border-blue-200 overflow-hidden shadow-2xs">
+                        <div class="grid grid-cols-12 gap-2 bg-slate-100/90 px-3 py-1.5 text-[10px] font-extrabold text-slate-700 border-b border-slate-200">
+                            <span class="col-span-4">سائز نمبر (Size)</span>
+                            <span class="col-span-4">رنگ (Color)</span>
+                            <span class="col-span-3 text-center">جوڑے / اسٹاک (Pairs)</span>
+                            <span class="col-span-1 text-center">حذف</span>
+                        </div>
+                        <div id="dynamicSizeRowsList" class="p-2 space-y-1.5 max-h-56 overflow-y-auto">
+                            <!-- Populated dynamically with rows -->
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                        <button type="button" onclick="addCustomSizeRow('', 'Black', 1)" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-blue-700 border border-blue-300 rounded-xl font-bold text-xs flex items-center gap-1 transition shadow-2xs">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> + نیا سائز شامل کریں (Add Custom Size)
+                        </button>
+                        <button type="button" onclick="resetCurrentGroupSizes()" class="text-[11px] text-slate-500 hover:text-slate-800 underline">
+                            دوبارہ پہلے جیسا کریں (Reset)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
+                <button onclick="closeAddProductModal()" class="px-3.5 py-1.5 border border-slate-300 rounded-xl text-slate-700">Cancel</button>
+                <button onclick="submitNewShoeProduct()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow">Save Shoe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Quick Customer -->
+    <div id="customerModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden border border-slate-200 animate-fade-in flex flex-col">
+            <div class="p-3.5 bg-slate-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-xs flex items-center gap-1.5">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-blue-400"></i> Add Customer Profile
+                </h3>
+                <button onclick="closeCustomerModal()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="p-4 space-y-2.5 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Full Name *</label>
+                    <input type="text" id="custNameInput" placeholder="Customer Name" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Phone Number *</label>
+                    <input type="text" id="custPhoneInput" placeholder="+1 555-0199" class="w-full p-2 border border-slate-300 rounded-lg focus:outline-none">
+                </div>
+            </div>
+            <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2">
+                <button onclick="closeCustomerModal()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-slate-600">Cancel</button>
+                <button onclick="submitNewCustomer()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

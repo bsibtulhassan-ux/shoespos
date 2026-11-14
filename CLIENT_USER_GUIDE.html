@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoleMate Shoe POS - Client User Guide</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background: #f8fafc; margin: 0; padding: 24px; }
+        .container { max-width: 820px; margin: 0 auto; background: #ffffff; padding: 36px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        h1 { color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; font-size: 24px; margin-top: 0; }
+        h2 { color: #2563eb; font-size: 18px; margin-top: 28px; display: flex; align-items: center; gap: 8px; }
+        .card { background: #f1f5f9; padding: 16px 20px; border-radius: 12px; margin: 12px 0; border-left: 4px solid #2563eb; }
+        .success-card { background: #ecfdf5; padding: 16px 20px; border-radius: 12px; margin: 12px 0; border-left: 4px solid #10b981; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 12px; background: #dbeafe; color: #1e40af; }
+        .badge-green { display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 12px; background: #d1fae5; color: #065f46; }
+        .pin-box { background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 20px; font-weight: bold; padding: 8px 16px; border-radius: 8px; display: inline-block; }
+        ol, ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .step { font-weight: bold; color: #0f172a; }
+        .urdu { font-size: 14px; color: #334155; margin-top: 4px; }
+        footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👟 SoleMate Shoe Shop POS - User Guide & Setup</h1>
+        <p>Yeh guide aapke counter staff aur store owner ke liye banai gayi hai taake software ko asani se use kiya ja sake.</p>
+
+        <h2>🚀 1. Desktop Setup & Auto-Start (Server Hamesha Active Rahe)</h2>
+        <div class="success-card">
+            <p><strong>Server ko 24/7 background mein chalane ke asaan tareeqay:</strong></p>
+            <ol>
+                <li><span class="step">Desktop Shortcut Banayein:</span> Folder ke andar <span class="badge">Setup_Desktop_Shortcut.bat</span> par double-click karein. Aapke Desktop par <strong>"SoleMate Shoe POS"</strong> ka shortcut ban jayega. Yeh shortcut <em>khamoshi se background mein</em> chalta hai bina kisi black CMD window ke!</li>
+                <li><span class="step">Windows Start Hote Hi Khud Chalana (Recommended):</span> Folder mein <span class="badge-green">Enable_AutoStart_With_Windows.bat</span> par double-click karein. Ab jab bhi dukaan ka computer on hoga, POS server khud ba khud background mein chal jayega!</li>
+                <li><span class="step">Server Stop / Restart:</span> Agar kabhi server stop karna ho to <span class="badge">Stop_POS_Server.bat</span> aur restart karna ho to <span class="badge">Restart_POS_Server.bat</span> par click karein.</li>
+            </ol>
+        </div>
+
+        <h2>🛒 2. Counter Billing (Baghair Kisi PIN ke Foran Shuru)</h2>
+        <p class="urdu">Cashier ya counter staff ko koi PIN daalne ki zaroorat nahi hai. Software khulte hi foran billing ke liye tayyar hai:</p>
+        <ul>
+            <li><span class="step">Barcode Scan:</span> Scanner se jooton ke box par barcode scan karein ya search bar mein naam/brand likhein. Shoe foran cart mein add ho jayega.</li>
+            <li><span class="step">Size & Color Select:</span> Screen par shoe card par size aur color select karke "Add to Cart" dabayein.</li>
+            <li><span class="step">Checkout:</span> "Proceed to Payment" dabayein, customer se Cash ya Card lein. Cash ki soorat mein system foran bata dega ke customer ko kitne paise wapas (Change) dene hain.</li>
+            <li><span class="step">Receipt Print:</span> "Print Receipt" dabayein. 80mm ya 58mm thermal printer par receipt nikal aayegi.</li>
+        </ul>
+
+        <h2>🔒 3. Manager / Owner Mode (Admin PIN)</h2>
+        <p class="urdu">Dukaan ka munafa (Profits), Cost Price aur Analytics cashier se mehfooz (Hidden) hain:</p>
+        <div class="card">
+            <p>Admin Mode Unlock karne ka PIN Code:</p>
+            <div class="pin-box">1234</div>
+            <p class="urdu" style="margin-top: 8px;">Jab bhi aap <strong>Analytics</strong>, <strong>Store Settings</strong>, ya <strong>Add/Delete Shoe</strong> par click karenge, system yeh 4-digit PIN maangega. Kaam khatam hone ke baad <strong>"Exit to Counter"</strong> par click karein taake staff dobara normal billing mode mein aa jaye.</p>
+        </div>
+
+        <h2>📱 4. Android Phone ya Tablet par chalana (Wi-Fi App)</h2>
+        <p class="urdu">Agar aap chahte hain ke shop ke andar sales boy mobile par barcode scan kare aur bill banaye:</p>
+        <ol>
+            <li>Apne mobile ko computer wale <strong>Wi-Fi ya Hotspot</strong> se connect karein.</li>
+            <li>Computer ki screen par top-right par <strong>"Android App"</strong> button dabayein. Wahan aapko aapki shop ka Wi-Fi link nazar aayega (Jaise: <code>http://192.168.1.X:8000</code>).</li>
+            <li>Mobile ke Chrome browser mein yeh link daalein.</li>
+            <li>Chrome ke 3 dots par click karke <strong>"Install App" / "Add to Home screen"</strong> par tap karein.</li>
+            <li>Mobile par app icon ban jayega aur bina kisi browser bar ke poori screen par mobile POS ban jayega!</li>
+        </ol>
+
+        <h2>⚙️ 5. Dukaan Ka Naam Aur Phone Number Badalna</h2>
+        <p class="urdu">Receipt par apni dukaan ka naam aur contact likhne ke liye:</p>
+        <ul>
+            <li>Top menu mein Settings (⚙️) par click karein aur PIN <code>1234</code> daalein.</li>
+            <li>Apni shop ka naam, address, mobile number aur Return Policy note likh kar <strong>"Save Settings"</strong> daba dein.</li>
+        </ul>
+
+        <footer>
+            SoleMate Footwear POS Pro • 100% Offline • Built for Modern Shoe Retailers
+        </footer>
+    </div>
+</body>
+</html>

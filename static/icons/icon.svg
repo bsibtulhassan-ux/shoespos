@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+  <!-- Background Rounded Rect -->
+  <rect width="512" height="512" rx="112" fill="url(#grad)" />
+  <!-- Inner circular badge -->
+  <circle cx="256" cy="256" r="180" fill="#ffffff" opacity="0.08" />
+  <!-- Shoe Icon Path -->
+  <g filter="url(#shadow)" fill="#ffffff" transform="translate(64, 96) scale(0.75)">
+    <path d="M472 288c-1.8 0-3.6.2-5.4.5L349.5 240.2c-15.8-6.1-33.3-6.2-49.2-.3L216 272H64c-35.3 0-64 28.7-64 64v32c0 17.7 14.3 32 32 32h416c35.3 0 64-28.7 64-64s-28.7-64-64-64h-16v16h16c8.8 0 16 7.2 16 16s-7.2 16-16 16H32v-32c0-17.7 14.3-32 32-32h140.7l77.7-29.1c9.5-3.6 20-3.5 29.5.1l117.1 48.3H400c-8.8 0-16-7.2-16-16s7.2-16 16-16h72c17.7 0 32 14.3 32 32s-14.3 32-32 32zM80 320c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zm64 0c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z"/>
+    <!-- Sole Grips -->
+    <rect x="32" y="380" width="448" height="24" rx="12" fill="#38bdf8" />
+    <path d="M64 200 L160 120 C180 100 220 90 260 110 L330 160 C360 180 370 210 360 240 L310 230 C310 200 290 180 270 170 L210 130 C190 120 160 130 140 150 L64 220 Z" fill="#60a5fa" opacity="0.9"/>
+  </g>
+  <text x="256" y="445" font-family="Arial, sans-serif" font-weight="900" font-size="34" fill="#ffffff" text-anchor="middle" letter-spacing="3">SOLE MATE</text>
+</svg>

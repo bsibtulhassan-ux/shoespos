@@ -1,0 +1,23 @@
+# Cloudflare & temporary binaries
+cloudflared.exe
+*.log
+cf_permanent.log
+tunnel_url.txt
+current_tunnel_url.txt
+qt_creds.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Mobile APK bundle
+mobile_apk_bundle/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.lnk
